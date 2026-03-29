@@ -25,7 +25,7 @@ This extension is prepared under `~/.pi/agent/extensions/pi-kimi-code` in this w
 If using elsewhere:
 
 ```bash
-git clone https://github.com/dpolishuk/pi-moonshot-kimi ~/.pi/agent/extensions/pi-kimi-code
+git clone https://github.com/dpolishuk/pi-kimi-code ~/.pi/agent/extensions/pi-kimi-code
 ```
 
 ## Configuration
