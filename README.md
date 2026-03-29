@@ -21,7 +21,7 @@ https://www.kimi.com/code/docs/en/more/third-party-agents.html
 
 ## Install
 
-This extension is already prepared under `~/.pi/agent/extensions/moonshot-kimi` in this workspace.
+This extension is prepared under `~/.pi/agent/extensions/pi-kimi-code` in this workspace (and also discoverable via the legacy `~/.pi/agent/extensions/moonshot-kimi` symlink).
 If using elsewhere:
 
 ```bash
