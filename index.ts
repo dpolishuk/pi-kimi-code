@@ -10,31 +10,43 @@
  *   - kimi-k2-thinking: Dedicated thinking model with reasoning always on
  *
  * Usage:
- *   1. Set your API key: export MOONSHOT_API_KEY=your-key
+ *   1. Run /login in pi and select "Moonshot AI (API Key)"
+ *      Or: export MOONSHOT_API_KEY=your-key
  *      (Get one at https://platform.moonshot.ai/console/api-keys)
- *   2. Start pi (extension is auto-loaded from ~/.pi/agent/extensions/)
- *   3. Use /model to select moonshot/kimi-k2.5 or moonshot/kimi-k2-thinking
- *
- * Alternatively, add to ~/.pi/agent/models.json:
- *   {
- *     "providers": {
- *       "moonshot": {
- *         "baseUrl": "https://api.moonshot.ai/v1",
- *         "apiKey": "MOONSHOT_API_KEY",
- *         "api": "openai-completions",
- *         "models": [...]
- *       }
- *     }
- *   }
- *
- * Pricing (per million tokens):
- *   kimi-k2.5:        $0.60 input / $3.00 output (thinking tokens included)
- *   kimi-k2-thinking: $0.60 input / $3.00 output
+ *   2. Use /model to select moonshot/kimi-k2.5 or moonshot/kimi-k2-thinking
  *
  * API docs: https://platform.moonshot.ai/docs/guide/start-using-kimi-api
  */
 
+import type { OAuthCredentials, OAuthLoginCallbacks } from "@mariozechner/pi-ai";
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+
+async function loginMoonshot(callbacks: OAuthLoginCallbacks): Promise<OAuthCredentials> {
+	// Simple API key prompt — Moonshot doesn't offer browser OAuth for API keys
+	const apiKey = await callbacks.onPrompt({
+		message: "Enter your Moonshot API key (from https://platform.moonshot.ai/console/api-keys):",
+	});
+
+	if (!apiKey || !apiKey.trim()) {
+		throw new Error("No API key provided");
+	}
+
+	// Store as a long-lived credential (API keys don't expire)
+	return {
+		refresh: apiKey.trim(),
+		access: apiKey.trim(),
+		expires: Date.now() + 10 * 365 * 24 * 60 * 60 * 1000, // 10 years
+	};
+}
+
+async function refreshMoonshotToken(credentials: OAuthCredentials): Promise<OAuthCredentials> {
+	// API keys don't expire, just return as-is
+	return credentials;
+}
+
+function getMoonshotApiKey(credentials: OAuthCredentials): string {
+	return credentials.access;
+}
 
 export default function (pi: ExtensionAPI) {
 	pi.registerProvider("moonshot", {
@@ -85,5 +97,11 @@ export default function (pi: ExtensionAPI) {
 				},
 			},
 		],
+		oauth: {
+			name: "Moonshot AI (API Key)",
+			login: loginMoonshot,
+			refreshToken: refreshMoonshotToken,
+			getApiKey: getMoonshotApiKey,
+		},
 	});
 }

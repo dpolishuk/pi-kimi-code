@@ -84,9 +84,19 @@ Add to `~/.pi/agent/settings.json`:
 
 ## Configuration
 
-### API Key
+### Option A: Login via pi (recommended)
 
-Set your Moonshot API key as an environment variable:
+Inside pi, run:
+
+```
+/login
+```
+
+Select **"Moonshot AI (API Key)"** from the menu, then paste your API key when prompted.
+
+Credentials are stored in `~/.pi/agent/auth.json` and persist across sessions.
+
+### Option B: Environment variable
 
 ```bash
 export MOONSHOT_API_KEY="your-api-key-here"
@@ -96,6 +106,16 @@ Add it to your shell profile (`~/.bashrc`, `~/.zshrc`, etc.) for persistence:
 
 ```bash
 echo 'export MOONSHOT_API_KEY="your-api-key-here"' >> ~/.bashrc
+```
+
+### Option C: Auth file
+
+Add directly to `~/.pi/agent/auth.json`:
+
+```json
+{
+  "moonshot": { "type": "api_key", "key": "your-api-key-here" }
+}
 ```
 
 **Get an API key:**
